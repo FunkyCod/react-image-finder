@@ -1,15 +1,15 @@
-import React, { lazy, Suspense } from "react";
-import PropTypes from "prop-types";
+import React, { lazy, Suspense } from 'react';
+import PropTypes from 'prop-types';
 import {
   ImageGalleryList,
   LoadMoreBox,
   LoadMoreWrap,
-} from "./ImageGallery.styled";
-import FetchErrorView from "../FetchErrorView";
-import Button from "../Button/";
-import Loader from "../Loader/";
+} from './ImageGallery.styled';
+import FetchErrorView from '../FetchErrorView';
+import Button from '../Button/';
+import Loader from '../Loader/';
 
-const ImageGalleryItem = lazy(() => import("../ImageGalleryItem"));
+const ImageGalleryItem = lazy(() => import('../ImageGalleryItem'));
 
 export default function ImageGallery({
   searchImageArray,
@@ -20,25 +20,23 @@ export default function ImageGallery({
   modalFn,
   onClick,
 }) {
-
-  if (status === "idle") {
+  if (status === 'idle') {
     return (
-      <div style={{ textAlign: "center", fontSize: "larger" }}>
-        Введите <b>имя</b> и заполните поле <b>per page</b>, <br />
-        для определиния количества результатов на странице.
+      <div style={{ textAlign: 'center', fontSize: 'larger' }}>
+        Enter <b>name</b> and input field <b>per page</b>, <br />
+        to determine the number of results per page.
       </div>
     );
   }
-  if (status === "pending") {
-
+  if (status === 'pending') {
     return <Loader />;
   }
 
-  if (status === "rejected") {
+  if (status === 'rejected') {
     return <FetchErrorView message={error} />;
   }
 
-  if (status === "resolved") {
+  if (status === 'resolved') {
     return (
       <>
         <Suspense
@@ -77,7 +75,7 @@ export default function ImageGallery({
                   >
                     Load More
                   </Button>
-                </LoadMoreBox>{" "}
+                </LoadMoreBox>{' '}
                 {showLoader && <Loader />}
               </LoadMoreWrap>
             </>

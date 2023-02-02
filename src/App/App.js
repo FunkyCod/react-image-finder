@@ -1,33 +1,32 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
-import { ToastContainer } from "react-toastify";
-import { toast } from "react-toastify";
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
-import "react-toastify/dist/ReactToastify.css";
-import { GlobalStyle } from "../theme/GlobalStyle.styled";
+import 'react-toastify/dist/ReactToastify.css';
+import { GlobalStyle } from '../theme/GlobalStyle.styled';
 
-import Loader from "../components/Loader";
-import Modal from "../components/Modal";
-import Searchbar from "../components/Searchbar";
+import Loader from '../components/Loader';
+import Modal from '../components/Modal';
+import Searchbar from '../components/Searchbar';
 
-import axiosPixabayIPI from "../services/axiosPixabayIPI";
+import axiosPixabayIPI from '../services/axiosPixabayIPI';
 
-import useAxiosFunction from "../hooks/useAxiosFunction";
+import useAxiosFunction from '../hooks/useAxiosFunction';
 
-
-const ImageGallery = lazy(() => import("../components/ImageGallery"));
+const ImageGallery = lazy(() => import('../components/ImageGallery'));
 
 export default function App() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(12);
   const [searchImageArray, setSearchImageArray] = useState([]);
-  const [error, setError] = useState("");
-  const [status, setStatus] = useState("idle");
+  const [error, setError] = useState('');
+  const [status, setStatus] = useState('idle');
   const [totalPages, setTotalPages] = useState(0);
   const [totalHits, setTotalHits] = useState(0);
   const [showLoader, setShowLoader] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalImage, setModalImage] = useState("");
+  const [modalImage, setModalImage] = useState('');
   const { result, errorFetch, axiosFetch } = useAxiosFunction();
 
   const getData = async () => {
@@ -35,26 +34,26 @@ export default function App() {
     try {
       await axiosFetch({
         axiosInstance: axiosPixabayIPI,
-        method: "GET",
-        url: "/",
+        method: 'GET',
+        url: '/',
 
         requestConfig: {
-          timeout: 5000, 
+          timeout: 5000,
           params: {
-            key: process.env.REACT_APP_PIXABAY_API_KEY,
+            key: '4451685-60023a6e5a1955e0b5db7381e',
             q: `${searchQuery}`,
             page: `${page}`,
-            image_type: "photo",
-            orientation: "horizontal",
+            image_type: 'photo',
+            orientation: 'horizontal',
             per_page: `${perPage}`,
             safesearch: true,
           },
         },
       });
-      setStatus("resolved");
+      setStatus('resolved');
       setError(null);
     } catch (error) {
-      setStatus("rejected");
+      setStatus('rejected');
       setError(errorFetch);
     } finally {
       setShowLoader(false);
@@ -63,7 +62,7 @@ export default function App() {
 
   useEffect(() => {
     const startFetch = async () => {
-      if (searchQuery !== "") {
+      if (searchQuery !== '') {
         await setSearchImageArray([]);
         await getData();
       }
@@ -80,11 +79,11 @@ export default function App() {
     if (page !== 1) {
       window.scrollBy({
         top: 550,
-        behavior: "smooth",
+        behavior: 'smooth',
       });
       if (searchImageArray.length >= totalHits) {
         toast.info(
-          `Сожалеем, но вы достигли конца списка \n результатов поиска по ${searchQuery}.`
+          `We're sorry, but you've reached the end of the \n list of search results for ${searchQuery}.`
         );
       }
     }
@@ -94,7 +93,7 @@ export default function App() {
   useEffect(() => {
     const updateFetch = async () => {
       try {
-        if (searchQuery !== "") {
+        if (searchQuery !== '') {
           await setSearchImageArray((prev) =>
             page !== 1 ? [...prev, ...result.hits] : result.hits
           );
@@ -102,7 +101,7 @@ export default function App() {
           await setTotalHits(result.totalHits);
         }
         if (result.hits.length === 0) {
-          setStatus("rejected");
+          setStatus('rejected');
         }
       } catch (error) {}
     };
@@ -113,8 +112,8 @@ export default function App() {
   const handleSearchBarSubmit = async (event) => {
     await event.preventDefault();
     await setSearchQuery(event.target.searchQuery.value);
-    if (event.target.searchQuery.value === "") {
-      return toast.info("Введите имя");
+    if (event.target.searchQuery.value === '') {
+      return toast.info('Enter name');
     }
     setPage(1);
     event.target.reset();
@@ -124,16 +123,15 @@ export default function App() {
     setPerPage(event.value);
   };
 
-  
   const handleLoadMoreButton = async () => {
     await setPage((prevState) => prevState + 1);
   };
- 
+
   const toggleModal = () => {
     setIsModalOpen((isModalOpen) => !isModalOpen);
   };
   const openLargeImage = (event) => {
-    if (event.target.nodeName !== "IMG") {
+    if (event.target.nodeName !== 'IMG') {
       return;
     }
     setModalImage(event.target.dataset.source);
@@ -169,13 +167,12 @@ export default function App() {
           onClick={handleLoadMoreButton}
           modalFn={openLargeImage}
         />
-      
+
         {isModalOpen && (
           <Modal onClose={toggleModal}>
-            <img src={modalImage} alt={"modal"} />
+            <img src={modalImage} alt={'modal'} />
           </Modal>
         )}
-       
       </Suspense>
     </>
   );
